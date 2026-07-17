@@ -178,3 +178,31 @@ Until now, Completed Flow Diagram
 
 """
 
+# 4. Sample Question Endpoint
+@app.get("/sample-questions")
+async def sample_questions():
+    return {
+        "questions": [
+            "How many orders were placed in total?",
+            "Which restaurant has the highest rating?",
+            "What is the most popular cuisine type by number of orders?",
+            "Which customer has spent the most money overall?",
+            "What percentage of orders were cancelled?",
+            "Which city has the most orders?",
+            "What is the average order value?",
+            "Which delivery agent completed the most orders?",
+            "What are the top 5 most expensive menu items?",
+            "How many customers are registered in Mumbai?",
+        ]
+    }
+
+if __name__ == "__main__":
+    print("[Startup] Verifying database connection...")
+    verify_connection()
+    print("[Startup] Database OK. Starting server...")
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=False,
+    )
