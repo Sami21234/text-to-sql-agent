@@ -1,5 +1,4 @@
 
-
 import os
 import re
 from langchain_community.utilities import SQLDatabase
@@ -11,6 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 USE_GROQ = os.getenv("USE_GROQ", "false").lower() == "true"
 
+# Global instances — expensive to recreate on every request
 _db = None
 
 
@@ -33,7 +33,12 @@ def get_db():
     return _db
 
 
-def get_llm(temperature: float = 0):
+def get_llm(temperature: float = 0):     # Zero temperature means fully deterministic output. The same question always generates the same SQL.
+    """
+     Returns the appropriate LLM based on environment.
+     temperature=0 is critical for deterministic SQL generation.
+
+    """
     if USE_GROQ:
         return ChatGroq(
             model="llama-3.1-8b-instant",
@@ -43,7 +48,7 @@ def get_llm(temperature: float = 0):
     return OllamaLLM(
         model="mistral",
         temperature=temperature,
-        num_ctx=4096,
+        num_ctx=4096,   # Sets the size of the context window used to generate the next token
     )
 
 
