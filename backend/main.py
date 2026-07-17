@@ -41,7 +41,7 @@ if os.path.exists(FRONTEND_DIR):    # check if folder exists
     )
 
 # Now, creating the Pydantic Models
-class QuestionRequest(BaseModel):       # So, that FastAPI understand what the request does sender is sending(is it string or Number, etc)
+class QuestionRequest(BaseModel):       # This class describes the incoming JSON. So that, FastAPI understand what the request does sender is sending(is it string or Number, etc)
     question: str
 
 class AnswerResponse(BaseModel):
@@ -78,4 +78,103 @@ async def health_check():
         "model": "mistral via ollama",
     }
 
+# 3. Post endpoint
+"""
+Now, imagine our frontend has textbox:
+     -----------------------------------------
+    | Ask anything about food delivery data   |
+    |                                         |
+    | [ Which city has most orders? ]         |
+    |                                         |
+    |          [ Ask AI ]                     |
+     ----------------------------------------- 
+
+    User clicks Ask AI.
+WHAT SHOULD HAPPEN?
+    Frontend
+      │
+      │
+      │ Question
+      ▼
+    Backend
+      │
+      │ SQL Query
+      ▼
+    Database
+      │
+      │ Result
+      ▼
+    Frontend
+
+This endpoint handles that entire communication.
+"""
+# why post --> beacuse in the /ask endpoint the question would have to go inside the URL. 
+@app.post("/ask", response_model = AnswerResponse)
+async def ask_endpoint(request: QuestionRequest):       # request gets the Question stored in the QuestionRequest object created automatically by the FastAPI.
+
+    # step 1 - Validate question
+    is_valid, reason = sanitize_question(request.question)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=reason)     # request invalid / user made mistake.
+
+    # step 2 - Run agent
+    result = ask_agent(request.question)
+
+    if not result["success"]:
+        raise HTTPException(status_code=500, detail=result.get("error", "Agent failed")
+        )
+
+    return AnswerResponse(      # Final return 
+        answer=result["answer"],
+        sql=result.get("sql", ""),
+        success=result["success"],
+        question=request.question,
+    )
+
+"""
+Until now, Completed Flow Diagram
+
+                 USER
+                   │
+                   │ Types Question
+                   ▼
+             Streamlit Frontend
+                   │
+                   │ POST /ask
+                   ▼
+         +-----------------------+
+         | FastAPI Route         |
+         | ask_endpoint()        |
+         +-----------------------+
+                   │
+                   ▼
+        request: QuestionRequest
+                   │
+                   ▼
+      sanitize_question(question)
+                   │
+        ┌──────────┴──────────┐
+        │                     │
+     Invalid               Valid
+        │                     │
+        ▼                     ▼
+ HTTPException(400)     ask_agent(question)
+                              │
+                              ▼
+                   AI + SQL + Database
+                              │
+                   ┌──────────┴─────────┐
+                   │                    │
+                Failed              Success
+                   │                    │
+                   ▼                    ▼
+         HTTPException(500)   AnswerResponse(...)
+                                      │
+                                      ▼
+                         FastAPI converts to JSON
+                                      │
+                                      ▼
+                              React Frontend
+
+"""
 

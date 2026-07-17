@@ -5,6 +5,7 @@ from langchain_community.utilities import SQLDatabase
 from langchain_ollama import OllamaLLM
 from langchain_groq import ChatGroq
 from database import get_db_path, verify_connection
+from safety import is_safe_query
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -118,6 +119,16 @@ SQL QUERY (raw SQL only, no formatting):"""
 
         # Clean any markdown formatting
         sql = clean_sql(str(sql_response))
+
+        # Safety check:
+        is_safe, reason = is_safe_query(sql)
+        if not is_safe:
+            return {
+                "answer": "I cannot execute that type of query for security resons.",
+                "sql": sql,
+                "success": False,
+                "error": f"Safety check failed: {reason}",
+            }
 
         print(f"\n[Agent] Generated SQL: {sql}")
 
