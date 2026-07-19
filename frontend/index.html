@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QueryPilot — Food Delivery Analytics</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="app">
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">QueryPilot</span>
+            </div>
+            <div class="header-sub">Food Delivery Analytics</div>
+        </div>
+    </header>
+
+    <main class="main">
+
+        <div class="left-panel">
+
+            <div class="panel-section">
+                <h3 class="panel-title">Ask a Question</h3>
+                <div class="input-area">
+                    <textarea
+                        id="questionInput"
+                        class="question-input"
+                        placeholder="e.g. Which restaurant has the highest revenue?"
+                        rows="3"
+                    ></textarea>
+                    <button class="ask-btn" id="askBtn">
+                        <span id="askBtnText">Ask</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3 class="panel-title">Sample Questions</h3>
+                <div class="chips" id="chipsContainer">
+                    <div class="chip-loading">Loading suggestions...</div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3 class="panel-title">Database</h3>
+                <div class="db-stats">
+                    <div class="db-stat">
+                        <span class="stat-icon">🍽️</span>
+                        <span class="stat-label">10 Restaurants</span>
+                    </div>
+                    <div class="db-stat">
+                        <span class="stat-icon">👤</span>
+                        <span class="stat-label">30 Customers</span>
+                    </div>
+                    <div class="db-stat">
+                        <span class="stat-icon">📦</span>
+                        <span class="stat-label">500 Orders</span>
+                    </div>
+                    <div class="db-stat">
+                        <span class="stat-icon">🛵</span>
+                        <span class="stat-label">8 Agents</span>
+                    </div>
+                    <div class="db-stat">
+                        <span class="stat-icon">🗃️</span>
+                        <span class="stat-label">5 Tables</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="right-panel">
+
+            <div class="results-area" id="resultsArea">
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <div class="empty-text">
+                        Ask any question about the food delivery data.
+                        The AI will write and execute the SQL for you.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="/static/app.js"></script>
+
+</body>
+</html>
