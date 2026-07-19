@@ -1,0 +1,325 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --radius: 8px;
+    --sql-bg: #1c2128;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header */
+.header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 52px;
+    flex-shrink: 0;
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon { font-size: 20px; }
+
+.logo-text {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.header-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+}
+
+/* Main layout */
+.main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Left panel */
+.left-panel {
+    width: 340px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.panel-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.panel-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+/* Input area */
+.input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.question-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 14px;
+    padding: 10px 12px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+    line-height: 1.5;
+    transition: border-color 0.2s;
+}
+
+.question-input:focus {
+    border-color: var(--accent);
+}
+
+.question-input::placeholder {
+    color: var(--text-muted);
+}
+
+.ask-btn {
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.ask-btn:hover { opacity: 0.85; }
+.ask-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Sample question chips */
+.chips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    line-height: 1.4;
+}
+
+.chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88, 166, 255, 0.05);
+}
+
+.chip-loading {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Database stats */
+.db-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.db-stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.stat-icon { font-size: 14px; }
+
+/* Right panel */
+.right-panel {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Empty state */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 40px;
+}
+
+.empty-icon { font-size: 48px; }
+
+.empty-text {
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+/* Result card */
+.result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.result-question {
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+}
+
+.result-answer {
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.result-answer.error {
+    color: #f85149;
+}
+
+/* SQL panel */
+.sql-panel {
+    border-top: 1px solid var(--border);
+}
+
+.sql-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+}
+
+.sql-toggle:hover { color: var(--accent); }
+
+.sql-code {
+    display: none;
+    padding: 12px 16px;
+    background: var(--sql-bg);
+    font-family: "Consolas", "Monaco", monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--accent2);
+    white-space: pre-wrap;
+    word-break: break-all;
+    border-top: 1px solid var(--border);
+}
+
+.sql-code.visible { display: block; }
+
+/* Loading state */
+.loading-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
