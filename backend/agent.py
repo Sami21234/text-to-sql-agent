@@ -101,6 +101,10 @@ RULES:
 - JOIN with users table when the answer needs customer names
 - Use strftime() for date functions, never MONTH() or YEAR()
 - Write exactly ONE SELECT statement, nothing else
+- Always prefix column names with their table name when joining tables
+- Write restaurants.name not just name when joining with menu_items
+- Write menu_items.name not just name when joining with restaurants
+- Write users.name not just name in any query involving joins
 
 FOOD DELIVERY SCHEMA RELATIONSHIPS:
 - orders.customer_id → users.user_id
