@@ -105,6 +105,9 @@ RULES:
 - Write restaurants.name not just name when joining with menu_items
 - Write menu_items.name not just name when joining with restaurants
 - Write users.name not just name in any query involving joins
+- To find average order value by cuisine type, join orders to restaurants only using restaurant_id
+- Do not join menu_items or order_items when the question is about order totals
+- order_items is only needed when the question asks about specific dishes or menu items
 
 FOOD DELIVERY SCHEMA RELATIONSHIPS:
 - orders.customer_id → users.user_id
