@@ -93,3 +93,82 @@ def inspect_schema(db_path: str) -> dict:
     conn.close()    # Closes the database connection.
     return schema   # returns the completed schema dictionary.
 
+# Now, function to generate prompt
+def generate_prompt(schema: dict, question: str) -> str:
+    """
+    Generates a precise SQL prompt from inspected schema.
+    Rules are derived from actual database structure -
+    no hardcoding needed.
+    """
+
+    # Getting the desired dictionaries
+    tables = schema["tables"]
+    relationships = schema["relationships"]
+    ambiguous = schema["ambiguous_columns"]
+
+    # Build table descriptions
+    table_lines = []    # Creates a list for table descriptions.
+    for table_name, info in tables.items():
+        col_descriptions = []       # Lists of colmn description.
+        for col in info["columns"]:
+            desc = col["name"]
+            if col["is_pk"]:
+                desc += " (PK)"     # if the column is primmary key, then append " (PK)" in the column name
+            col_descriptions.append(desc)       # stores  description.
+
+        fk_descriptions = []     # Lists of foreign key descriptions.
+        for fk in info["foreign_keys"]:
+            fk_descriptions.append(
+                f"{fk['from_column']} → "
+                f"{fk['to_table']}.{fk['to_column']}"
+            )
+
+        line = (    # building the table description.
+            f"Table: {table_name} "
+            f"({info['row_count']} rows)\n"
+            f"  Columns: {', '.join(col_descriptions)}"
+        )
+        if fk_descriptions:
+            line += (
+                f"\n  Foreign keys: "
+                f"{', '.join(fk_descriptions)}"
+            )
+        table_lines.append(line)
+
+    # Auto-generate disambiguation rules
+    disambiguation_rules = []   # Lists of abmiguity rules.
+    for col_name, table_list in ambiguous.items():
+        for tbl in table_list:
+            disambiguation_rules.append(
+                f"Write {tbl}.{col_name} not just {col_name}"
+            )
+
+    prompt = f"""You are a SQLite expert. Write a single SQL query to answer the question.
+
+DATABASE SCHEMA:
+{chr(10).join(table_lines)}
+
+RELATIONSHIPS:
+{chr(10).join(relationships) if relationships else "None"}
+
+DISAMBIGUATION RULES:
+{chr(10).join(disambiguation_rules) if disambiguation_rules else "No ambiguous columns"}
+
+STRICT RULES:
+- Return ONLY raw SQL — no markdown, no backticks, no explanation
+- SQLite syntax only — use strftime() not MONTH() or YEAR()
+- Exactly ONE SELECT statement
+- UPPERCASE for status/enum values
+- COUNT(*) for counting rows, SUM() for monetary totals
+- Always prefix ambiguous column names with table name
+- JOIN using the foreign key relationships listed above
+
+QUESTION: {question}
+
+SQL:"""
+
+    return prompt
+
+
+# Now, function to generate the Sample_Questions
+
