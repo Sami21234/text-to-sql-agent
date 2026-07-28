@@ -172,3 +172,49 @@ SQL:"""
 
 # Now, function to generate the Sample_Questions
 
+def generate_sample_questions(
+        schema: dict,
+        llm,
+        count: int = 10     # number of questions.
+) -> list[str]:
+    """
+    Uses the LLM to generate relevant sample questions
+    based on actual database schema.
+    """
+    tables = schema["tables"]
+
+    table_summary = []
+    for table_name, info in tables.items():
+        col_names = [col["name"] for col in info["columns"]]
+        table_summary.append(
+            f"{table_name}: {', '.join(col_names)}"
+        )
+
+    prompt = f"""You are helping users explore a database.
+Based on this database schema, generate exactly {count} 
+useful analytical questions a business user would ask.
+
+SCHEMA:
+{chr(10).join(table_summary)}
+
+Return exactly {count} questions, one per line.
+No numbering, no bullets, no explanation.
+Only the questions themselves.
+Make them specific to the actual table and column names."""
+
+    response = llm.invoke(prompt)
+    lines = [    # building the output list.
+        line.strip()
+        for line in str(response).strip().split('\n')
+        if line.strip() and '?' in line     # Keeps only non-empty lines containing a question mark.
+    ]
+    return lines[:count]
+
+# Now, function to validate_sqlite_file
+def validate_sqlite_file(file_bytes: bytes) -> tuple[bool, str]:
+    """
+    Validates that uploaded file is a genuine SQLite database.
+    Checks magic bytes - cannot be faked by renaming a file.
+    """
+    # SQLite files always start with this exact string
+    
