@@ -217,4 +217,25 @@ def validate_sqlite_file(file_bytes: bytes) -> tuple[bool, str]:
     Checks magic bytes - cannot be faked by renaming a file.
     """
     # SQLite files always start with this exact string
+    sqlite_magic = b'SQLite format 3\x00'
     
+    if len(file_bytes) < 16:
+        return False, "File too small to be a valid database"
+
+    if file_bytes[:16] != sqlite_magic:
+        return (
+            False,
+            "File is not a valid SQLite database. "
+            "Only .db files created with SQLite are supported."
+        )
+
+    # Check minimum file size - empty DB is at least 4096 bytes
+    if len(file_bytes) < 4096:
+        return False, "Database file appears to be empty"
+
+    # Check maximum file size — 50MB limit
+    max_size = 50 * 1024 * 1024     # 50 * bytes * mega_bytes
+    if len(file_bytes) > max_size:
+        return False, "File too large. Maximum size is 50MB"
+
+    return True, ""
