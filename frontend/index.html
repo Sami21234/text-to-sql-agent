@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QueryPilot — Food Delivery Analytics</title>
+    <title>QueryPilot — Natural Language to SQL</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
 <div class="app">
 
     <header class="header">
@@ -16,14 +15,50 @@
                 <span class="logo-icon">📊</span>
                 <span class="logo-text">QueryPilot</span>
             </div>
-            <div class="header-sub">Food Delivery Analytics</div>
+            <div class="header-meta" id="headerMeta">
+                Food Delivery Analytics
+            </div>
+            <div class="header-actions">
+                <button class="btn-ghost" id="resetBtn">
+                    Reset to Demo DB
+                </button>
+            </div>
         </div>
     </header>
 
     <main class="main">
 
+        <!-- Left Panel -->
         <div class="left-panel">
 
+            <!-- Upload DB -->
+            <div class="panel-section upload-section">
+                <h3 class="panel-title">Database</h3>
+                <div class="upload-box" id="uploadBox">
+                    <input
+                        type="file"
+                        id="dbFileInput"
+                        accept=".db"
+                        hidden
+                    >
+                    <div class="upload-icon">🗄️</div>
+                    <div class="upload-text">
+                        Drop your SQLite .db file here
+                    </div>
+                    <button
+                        class="btn-upload"
+                        onclick="document.getElementById('dbFileInput').click()"
+                    >
+                        Choose File
+                    </button>
+                </div>
+                <div class="upload-status" id="uploadStatus">
+                    Using: food_delivery.db (demo)
+                </div>
+                <div class="db-tables" id="dbTables"></div>
+            </div>
+
+            <!-- Ask Question -->
             <div class="panel-section">
                 <h3 class="panel-title">Ask a Question</h3>
                 <div class="input-area">
@@ -39,60 +74,53 @@
                 </div>
             </div>
 
+            <!-- Sample Questions -->
             <div class="panel-section">
                 <h3 class="panel-title">Sample Questions</h3>
                 <div class="chips" id="chipsContainer">
-                    <div class="chip-loading">Loading suggestions...</div>
+                    <div class="chip-loading">
+                        Loading suggestions...
+                    </div>
                 </div>
             </div>
 
+            <!-- Query History -->
             <div class="panel-section">
-                <h3 class="panel-title">Database</h3>
-                <div class="db-stats">
-                    <div class="db-stat">
-                        <span class="stat-icon">🍽️</span>
-                        <span class="stat-label">10 Restaurants</span>
-                    </div>
-                    <div class="db-stat">
-                        <span class="stat-icon">👤</span>
-                        <span class="stat-label">30 Customers</span>
-                    </div>
-                    <div class="db-stat">
-                        <span class="stat-icon">📦</span>
-                        <span class="stat-label">500 Orders</span>
-                    </div>
-                    <div class="db-stat">
-                        <span class="stat-icon">🛵</span>
-                        <span class="stat-label">8 Agents</span>
-                    </div>
-                    <div class="db-stat">
-                        <span class="stat-icon">🗃️</span>
-                        <span class="stat-label">5 Tables</span>
+                <h3 class="panel-title">
+                    Query History
+                    <span class="history-count" id="historyCount">
+                        0
+                    </span>
+                </h3>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">
+                        No queries yet
                     </div>
                 </div>
             </div>
 
         </div>
 
+        <!-- Right Panel -->
         <div class="right-panel">
-
             <div class="results-area" id="resultsArea">
                 <div class="empty-state">
                     <div class="empty-icon">💬</div>
+                    <div class="empty-title">
+                        Ask anything about your data
+                    </div>
                     <div class="empty-text">
-                        Ask any question about the food delivery data.
-                        The AI will write and execute the SQL for you.
+                        Use the demo food delivery database or 
+                        upload your own SQLite file. The AI writes 
+                        the SQL and explains the results.
                     </div>
                 </div>
             </div>
-
         </div>
 
     </main>
 
 </div>
-
 <script src="/static/app.js"></script>
-
 </body>
 </html>
