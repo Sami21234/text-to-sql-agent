@@ -6,6 +6,7 @@ import sqlite3
 import csv
 import io
 import asyncio
+from agent import ask_agent, get_llm
 from concurrent.futures import ThreadPoolExecutor
 from fastapi import FastAPI, HTTPException, UploadFile, File      
 from fastapi.middleware.cors import CORSMiddleware      # CORS(Cross Origin Resource Sharing)
@@ -17,7 +18,6 @@ import uvicorn      # for running the FastAPI server.
 sys.path.append(os.path.dirname(__file__))      # Adding the backend folder to the Python's search path
 
 from database import verify_connection, get_db_path
-from agent import ask_agent, get_llm
 from safety import sanitize_question
 from schema_inspector import(
     inspect_schema,
@@ -226,9 +226,12 @@ async def upload_database(file: UploadFile = File(...)):
     # Function to generate the questions
     def generate_questions():
         try:
-            llm = get_llm
+            print("[Questions] Starting generation...")
+            llm = get_llm()
             questions = generate_sample_questions(schema, llm)
             _state["sample_questions"] = questions
+            print(f"[Questions] Generated {len(questions)} questions")
+            print(f"[Questions] {questions}")
         except Exception as e:
             print(f"[Warning] Could not generate questions: {e}")
             _state["sample_questions"] = []
@@ -348,7 +351,9 @@ async def sample_questions():
     Falls back to defaults for food delivery DB.
     """
     if _state["sample_questions"]:
-        return {"questions": _state["sample_questions"]}
+        return {"questions": _state["sample_questions"],
+                "source": "generated"
+        }
 
     # Default questions for food delivery database
     return {
@@ -363,7 +368,8 @@ async def sample_questions():
             "Which delivery agent completed the most orders?",
             "What are the top 5 most expensive menu items?",
             "How many customers are registered in Mumbai?",
-        ]
+        ],
+        "source": "default"
     }
 
 @app.get("/history")
@@ -387,12 +393,12 @@ async def export_csv(history_id: int):
         )
 
     entry = history[history_id]
-    raw_result = entry.get("raw_result", "")
+    sql = entry.get("sql", "")
 
-    if not raw_result:
+    if not sql or not sql.upper().strip().startswith("SELECT"):
         raise HTTPException(
             status_code=400,
-            detail="No data available to export"
+            detail="No valid query to export"
         )
 
     try:
@@ -400,7 +406,7 @@ async def export_csv(history_id: int):
         db_path = _state["active_db_path"] or get_db_path()
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute(entry["sql"])
+        cursor.execute(sql)
 
         columns = [desc[0] for desc in cursor.description]
         rows = cursor.fetchall()

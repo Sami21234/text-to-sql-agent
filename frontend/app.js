@@ -91,7 +91,8 @@ async function handleFileUpload(file) {
         historyCount.textContent = '0';
 
         // Poll for sample questions
-        setTimeout(loadSampleQuestions, 3000);
+        chipsContainer.innerHTML = '<div class="chip-loading">Generating questions for your database...</div>';
+        waitAndLoadGeneratedQuestions();
 
     } catch (err) {
         uploadStatus.textContent = 'Upload failed. Try again.';
@@ -107,11 +108,15 @@ async function loadSampleQuestions() {
 
         chipsContainer.innerHTML = '';
         data.questions.forEach(question => {
+            const cleanQuestion = question
+                .replace(/^\d+\.\s*/, '')
+                .trim();
+
             const chip = document.createElement('button');
             chip.className = 'chip';
-            chip.textContent = question;
+            chip.textContent = cleanQuestion;
             chip.addEventListener('click', () => {
-                questionInput.value = question;
+                questionInput.value = cleanQuestion;
                 questionInput.focus();
             });
             chipsContainer.appendChild(chip);
@@ -121,6 +126,56 @@ async function loadSampleQuestions() {
         chipsContainer.innerHTML =
             '<div class="chip-loading">Could not load suggestions</div>';
     }
+}
+
+async function waitAndLoadGeneratedQuestions() {
+    // Keep checking every 3 seconds until generated questions appear
+    const maxAttempts = 15;
+    let attempts = 0;
+
+    const check = async () => {
+        attempts++;
+        console.log(`[Questions] Check attempt ${attempts}`);
+
+        try {
+            const res = await fetch(`${API}/sample-questions`);
+            const data = await res.json();
+
+            if (data.source === 'generated') {
+                console.log('[Questions] Generated questions received');
+                chipsContainer.innerHTML = '';
+                data.questions.forEach(question => {
+                    const cleanQuestion = question
+                        .replace(/^\d+\.\s*/, '')
+                        .trim();
+                    const chip = document.createElement('button');
+                    chip.className = 'chip';
+                    chip.textContent = cleanQuestion;
+                    chip.addEventListener('click', () => {
+                        questionInput.value = cleanQuestion;
+                        questionInput.focus();
+                    });
+                    chipsContainer.appendChild(chip);
+                });
+                return;
+            }
+
+            if (attempts < maxAttempts) {
+                setTimeout(check, 3000);
+            } else {
+                chipsContainer.innerHTML =
+                    '<div class="chip-loading">Using default suggestions</div>';
+                loadSampleQuestions();
+            }
+
+        } catch (err) {
+            if (attempts < maxAttempts) {
+                setTimeout(check, 3000);
+            }
+        }
+    };
+
+    setTimeout(check, 3000);
 }
 
 
