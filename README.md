@@ -1,44 +1,5 @@
-﻿
-# QueryPilot 📊 — Natural Language to SQL Agent
+﻿<!-- 
 
-> Ask questions about your database in plain English.
-> Get instant answers backed by real SQL queries.
-> Full transparency — see exactly which query ran.
-
----
-
-## The Problem
-
-Data lives in databases. Insights require SQL.
-Most people cannot write SQL.
-
-A marketing manager wants to know which city has the 
-most orders this month. A finance analyst needs the 
-average order value by cuisine type. An operations lead 
-wants the cancellation rate by restaurant.
-
-Today they either wait for a data engineer, learn SQL 
-themselves, or make decisions without data.
-
-QueryPilot eliminates that bottleneck.
-
----
-
-## What It Does
-
-Type a question in plain English. QueryPilot generates 
-the SQL, executes it against your database, and returns 
-a clear answer — with the SQL shown for full transparency 
-and auditability.
-
-| You ask | QueryPilot does |
-|---|---|
-| "Which customer spent the most?" | Generates JOIN query across orders + users |
-| "What % of orders were cancelled?" | Writes CASE WHEN percentage query |
-| "Top cuisine by revenue?" | Groups by cuisine, sums total_amount |
-| "How many Mumbai customers?" | Filters users by city |
-
----
 
 ## Live Demo
 
@@ -61,64 +22,167 @@ Clone and run locally — instructions below.
 
 
 ---
+-->
+
+
+
+# QueryPilot 📊 — Natural Language to SQL Agent
+
+> Ask questions about any database in plain English.
+> Get instant answers backed by real SQL.
+> Your data never leaves your machine.
+
+**Demo Video:** [Watch on LinkedIn](#) | **GitHub:** [github.com/Sami21234/text-to-sql-agent](https://github.com/Sami21234/text-to-sql-agent)
+
+---
+
+## The Problem
+
+Data lives in databases. Insights require SQL.
+Most people cannot write SQL.
+
+A marketing manager wants to know which city has the most 
+orders this month. A finance analyst needs revenue by cuisine 
+type. An operations lead wants cancellation rates by restaurant.
+
+Today they either wait for a data engineer, learn SQL 
+themselves, or make decisions without data.
+
+QueryPilot eliminates that bottleneck.
+
+---
+
+## Your Data Is Safe - Here Is Why
+
+This is the most important thing to understand about QueryPilot.
+
+**Everything runs locally on your machine.**
+
+- Mistral 7B runs through Ollama on your own hardware
+- Your database file never leaves your computer
+- No queries are sent to any cloud API
+- No third party ever sees your data
+- Suitable for sensitive domains — HR records, financial data, medical information, legal documents
+
+This is fundamentally different from tools like ChatGPT with 
+Code Interpreter or cloud-based analytics platforms. Those 
+services process your data on their servers. QueryPilot 
+processes everything on yours.
+
+---
+
+## What It Does
+
+Upload any SQLite database. Ask questions in plain English.
+Get answers backed by real SQL with full transparency.
+
+| You ask | QueryPilot does |
+|---|---|
+| "Which customer spent the most?" | Inspects schema → generates JOIN query → executes → explains |
+| "What % of orders were cancelled?" | Writes CASE WHEN percentage query → shows result |
+| "Top cuisine by revenue?" | Groups by cuisine, sums totals, ranks results |
+| "What is the total salary by department?" | Detects HR schema → generates relevant query |
+
+---
+
+## Key Features
+
+**Dynamic Database Upload**
+Upload any SQLite .db file. The system automatically detects
+all tables, columns, primary keys, foreign keys, and 
+relationships. No configuration needed.
+
+**Auto-Generated Sample Questions**
+After upload, Mistral analyzes your schema and generates 10 
+relevant analytical questions specific to your database. 
+Different database = different questions.
+
+**SQL Transparency**
+Every answer shows the exact SQL query that ran. Business 
+users can verify logic, auditors can trace results, analysts 
+can adapt queries for custom reports.
+
+**Query History with CSV Export**
+Every query is tracked in the session. Re-run any previous 
+question with one click. Export any result set to CSV 
+for further analysis in Excel or other tools.
+
+**Security Layer**
+Only SELECT queries execute. DROP, DELETE, UPDATE, INSERT 
+are blocked at the code level before reaching the database 
+regardless of what the LLM generates.
+
+**Complete Privacy**
+No internet connection required after setup. Everything 
+runs locally. Your data never leaves your machine.
+
+---
+
+## When To Use QueryPilot vs RAG
+
+**Use QueryPilot (SQL) when:**
+Your data is structured and relational. Questions require 
+exact numeric aggregation, rankings, counts, or comparisons. 
+Example: "Show me total sales revenue by region for Q2."
+
+**Use RAG when:**
+Your data is unstructured text. Questions require semantic 
+understanding and context retrieval. Example: "How do I reset 
+my router if the power light is blinking?" — the answer lives 
+in a manual, not a database table.
+
+Same AI engineering stack. Different data types. Different tools.
+
+---
+
+## Screenshots
+
+### Food Delivery Analytics
+<img width="1872" height="927" alt="query_pilot_ss3" src="https://github.com/user-attachments/assets/61493689-0d28-481f-97dc-bedecb0df099" />
+
+<!-- ### Dynamic HR Database Upload
+![HR Database](screenshots/hr_upload.png) -->
+
+### SQL Transparency Panel
+<img width="1918" height="967" alt="query_pilot_ss2" src="https://github.com/user-attachments/assets/25cffb8f-a8e1-4f76-a0a9-558b694e77bc" />
+
+<!-- ### Auto-Generated Schema Questions
+![Schema Questions](screenshots/schema_questions.png) -->
+
+---
 
 ## How It Works
 <div align="centre">
 
 ```text
 
-User types question in plain English
+User uploads SQLite database
             ↓
-Safety check — validate input length and patterns
+PRAGMA inspection — tables, columns, PKs, FKs, row counts
             ↓
-LLM (Mistral 7B) receives question + full schema
+Ambiguous column detection — auto-generates disambiguation rules
             ↓
-LLM generates raw SQL query
+Schema-aware prompt generated — no hardcoding
             ↓
-clean_sql() strips markdown formatting and multiple statements
+User asks question in plain English
             ↓
-Safety check — block any non-SELECT queries
+Input validation — length check, injection pattern detection
+            ↓
+LLM (Mistral 7B) generates raw SQL from schema prompt
+            ↓
+clean_sql() strips markdown and multiple statements
+            ↓
+Safety check — SELECT-only guard blocks destructive queries
             ↓
 SQLite executes the query
             ↓
 LLM formats raw result as natural language answer
             ↓
-Answer + SQL displayed in UI with toggle panel
+Answer + SQL + CSV export displayed in UI
+            ↓
+Query saved to session history
 ```
 </div>
-
----
-
-## Database Schema
-
-Food delivery platform with 5 normalized tables:
-
-users — customers, restaurant owners, delivery agents<br>
-restaurants — 10 restaurants across 5 cities<br>
-menu_items — 50 menu items across all restaurants<br>
-orders — 500 orders with realistic distributions<br>
-order_items — 1200+ line items linking orders to menu items
-
-### Key relationships:
-- orders.customer_id → users.user_id
-- orders.restaurant_id → restaurants.restaurant_id
-- orders.agent_id → users.user_id
-- order_items.order_id → orders.order_id
-- order_items.item_id → menu_items.item_id
-
----
-
-## Example Questions
-- How many orders were placed in total?
-- Which restaurant has the highest rating?
-- What is the most popular cuisine type by number of orders?
-- Which customer has spent the most money overall?
-- What percentage of orders were cancelled?
-- Which city has the most orders?
-- What is the average order value?
-- Which delivery agent completed the most orders?
-- What are the top 5 most expensive menu items?
-- How many customers are registered in Mumbai?
 
 ---
 
@@ -126,15 +190,16 @@ order_items — 1200+ line items linking orders to menu items
 
 | Component | Technology |
 |---|---|
-| LLM | Mistral 7B via Ollama |
+| LLM | Mistral 7B via Ollama (fully local) |
+| Schema Inspection | SQLite PRAGMA statements |
 | SQL Execution | SQLite + LangChain SQLDatabase |
-| Safety Layer | Custom keyword filter + SELECT-only guard |
+| Safety Layer | SELECT-only guard + keyword blocklist |
 | Backend API | FastAPI |
 | Frontend | HTML, CSS, Vanilla JavaScript |
-| Database | SQLite (food_delivery.db) |
+| Database | SQLite (any .db file) |
 
 **Total API cost: $0**
-**Runs entirely locally — no data leaves your machine**
+**Data privacy: Everything runs locally**
 
 ---
 
@@ -157,34 +222,52 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**Step 4 — Create and seed the database**
+**Step 4 — Create demo database**
 ```bash
 python backend/create_db.py
 ```
 
-**Step 5 — Pull Mistral**
+**Step 5 — Pull Mistral and start Ollama**
 ```bash
 ollama pull mistral
 ollama serve
 ```
 
-**Step 6 — Start the server**
+**Step 6 — Start QueryPilot**
 ```bash
 python backend/main.py
 ```
 
-**Step 7 — Open browser**<br>
-### type: http://localhost:8000
+**Step 7 — Open browser**
+
+http://localhost:8000
+
+
+---
+
+## Usage
+
+**With demo database:**
+Start asking questions immediately using the sample chips.
+
+**With your own database:**
+1. Click "Choose File" or drag and drop your .db file
+2. Wait for schema detection and question generation
+3. Ask any question about your data
+
+**Keyboard shortcut:**
+Press Enter to submit a question without clicking Ask.
 
 ---
 
 ## Project Structure
 
-querypilot/<br>
+text-to-sql-agent/<br>
 │<br>
 ├── backend/<br>
 │ ├── create_db.py # Creates and seeds SQLite database<br>
 │ ├── database.py # Connection manager<br>
+│ ├── schema_inspector.py # PRAGMA-based schema detection<br>
 │ ├── safety.py # SQL guardrails and input validation<br>
 │ ├── agent.py # Two-step NL-to-SQL pipeline<br>
 │ └── main.py # FastAPI REST API<br>
@@ -192,92 +275,122 @@ querypilot/<br>
 ├── frontend/<br>
 │ ├── index.html # Analytics interface<br>
 │ ├── style.css # Dark theme<br>
-│ └── app.js # Frontend logic<br>
+│ └── app.js # Frontend logic with polling<br>
 │<br>
 ├── backend/<br>
-│ └── food_delivery.db # SQLite database (auto-created)<br>
+│ └── uploads/ # Upload SQLite databases<br>
 ├── requirements.txt<br>
 └── README.md
 
 ---
 
+## API Reference
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | /health | Server status |
+| POST | /upload-db | Upload SQLite database |
+| GET | /db-info | Current schema details |
+| POST | /ask | Submit a natural language question |
+| GET | /sample-questions | Get schema-aware suggestions |
+| GET | /history | Session query history |
+| GET | /export/{id} | Download query result as CSV |
+| DELETE | /reset | Return to demo database |
+
+---
+
 ## Key Engineering Decisions
 
+**Why auto-generate prompt rules from schema?**
+Hardcoded prompt rules break when the schema changes or a 
+new database is uploaded. Schema inspection via SQLite PRAGMA 
+generates precise rules — foreign key paths, ambiguous column 
+disambiguation, table row counts — automatically from the 
+actual database structure. Different database = different rules 
+= fewer hallucinations.
+
 **Why two-step pipeline instead of ReAct agent loop?**
-Mistral 7B in a ReAct loop consistently wraps SQL in markdown 
-code blocks and generates inconsistent output formats. Separating 
-SQL generation from answer formatting gives each step a single 
-clear responsibility and produces reliable output.
+Mistral 7B in a ReAct loop produces inconsistent output — 
+markdown formatting, multiple statements, wrong aggregation 
+functions. Separating SQL generation from answer formatting 
+gives each step a single responsibility and produces reliable 
+output. One prompt asks for SQL only. Another prompt explains 
+the result.
 
-**Why clean_sql()?**
-Mistral adds markdown fences around SQL even when instructed not 
-to. Rather than fighting the model's habits through prompt 
-engineering alone, clean_sql() strips formatting programmatically. 
-Defense in depth — prompting and code both protect against bad output.
+**Why clean_sql() in addition to prompt rules?**
+Defense in depth. Prompt rules reduce bad output. clean_sql() 
+catches what slips through. Relying on only one layer for 
+structured output safety is insufficient for production.
 
-**Why show the SQL to users?**
-Business users need to trust the answer. Showing the exact query 
-provides an audit trail — stakeholders can verify the logic, 
-analysts can adapt queries for custom reports, and the system 
-never feels like a black box.
+**Why SQLite instead of MySQL or PostgreSQL?**
+Zero infrastructure. One file. Portable. The SQL logic is 
+directly transferable to MySQL or PostgreSQL in production. 
+For a local privacy-first tool, SQLite is the correct choice.
 
-**Why SQLite instead of MySQL?**
-Zero infrastructure. One file. Runs anywhere without a server 
-process, credentials, or port configuration. The SQL logic is 
-directly transferable to MySQL or PostgreSQL in production.
-
-**Why safety.py?**
-LLMs can generate destructive SQL. A SELECT-only guard at the 
-code level prevents DROP, DELETE, UPDATE from ever reaching the 
-database regardless of what the LLM generates.
+**Why local LLM instead of GPT-4 API?**
+Privacy. A tool that processes sensitive business data — 
+HR records, financial data, customer information — must never 
+send that data to a third party server. Mistral 7B via Ollama 
+runs entirely on your hardware. GPT-4 sends every query and 
+every result to OpenAI's servers. For enterprise use cases 
+that is a compliance violation.
 
 ---
 
 ## Known Limitations
 
-- Mistral 7B occasionally generates ambiguous column references 
-  on complex multi-table joins — adding table prefixes to the 
-  prompt rules reduces but does not eliminate this
-- Very complex analytical queries with multiple subqueries may 
-  exceed Mistral's reasoning capacity — rephrase as simpler 
-  questions for best results
-- Schema is fixed to food delivery domain in current version — 
-  dynamic database upload is the next planned feature
+- Complex statistical queries (median, correlation, 
+  percentile) may produce incorrect results with Mistral 7B — 
+  these require multi-step calculation that smaller local 
+  models handle inconsistently
+- Generated sample questions may include questions the 
+  database cannot answer if the schema lacks certain data 
+  patterns
+- File upload uses server-side storage — uploaded databases 
+  are deleted on server restart in the current implementation
+- SQLite only — MySQL and PostgreSQL support is on the roadmap
 
 ---
 
 ## Roadmap
 
-- Dynamic SQLite file upload — query any database, any domain
-- Auto-generated sample questions from actual schema
-- Query history with re-run capability
-- Export results to CSV
+- PostgreSQL and MySQL connection string support
+- Persistent uploaded database storage
 - Multi-turn conversation memory for follow-up questions
+- Chart generation from query results
+- Query bookmarking and sharing
 
 ---
+
 ## What I Learned
 
-**Prompt engineering is as important as model selection.**
-A weaker model with precise, structured prompts outperforms a 
-stronger model with vague instructions. The schema relationship 
-map in the prompt eliminated column hallucination completely.
+**RAG and SQL solve different problems.**
+RAG retrieves meaning from unstructured text. SQL retrieves 
+facts from structured data. Both use LLMs for generation. 
+Knowing which tool fits which problem is the real engineering 
+skill.
+
+**Schema-aware prompting eliminates most hallucinations.**
+The single biggest improvement to SQL generation quality was 
+injecting the exact foreign key map into the prompt. The LLM 
+stopped guessing column names and started using real ones.
 
 **Separate concerns in LLM pipelines.**
-One prompt asking the model to generate SQL, validate it, 
-execute it, and explain it fails consistently. Two focused 
-prompts — generate SQL, then explain result — succeed reliably.
+One prompt doing too many things fails. Two focused prompts 
+succeed. Generate SQL in one step. Explain results in another.
 
 **Defense in depth for LLM output.**
-Never trust model output directly. clean_sql() strips markdown. 
-safety.py blocks destructive keywords. is_safe_query() validates 
-before execution. Three layers catch what one layer misses.
+Prompt rules reduce bad output. clean_sql() catches 
+formatting. safety.py blocks destructive keywords. Three 
+layers catch what one layer misses.
 
 ---
+
 ## Author
 
-Built by [Your Name]
-GitHub: [yourusername](https://github.com/Sami21234)
-LinkedIn: [yourprofile](https://linkedin.com/in/yourprofile)
+Built by Mohd Sami
+GitHub: [Sami21234](https://github.com/Sami21234)
+LinkedIn: [mohd-sami-dev](https://linkedin.com/in/mohd-sami-dev)
 
 ---
 
@@ -291,5 +404,6 @@ MIT License
 
 - [LangChain](https://langchain.com) for SQL database utilities
 - [Ollama](https://ollama.ai) for local LLM runtime
-- [SQLite](https://sqlite.org) for zero-config database
+- [SQLite](https://sqlite.org) for zero-config database engine
 - [FastAPI](https://fastapi.tiangolo.com) for the REST API
+

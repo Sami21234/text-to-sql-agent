@@ -162,6 +162,8 @@ STRICT RULES:
 - COUNT(*) for counting rows, SUM() for monetary totals
 - Always prefix ambiguous column names with table name
 - JOIN using the foreign key relationships listed above
+- For comparison questions use SELECT with CASE WHEN or subqueries, never UPDATE or INSERT
+- Questions about "highest and lowest" always use ORDER BY with LIMIT or MIN/MAX in a subquery
 
 QUESTION: {question}
 
