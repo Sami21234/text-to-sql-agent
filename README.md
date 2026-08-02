@@ -138,16 +138,15 @@ Same AI engineering stack. Different data types. Different tools.
 ## Screenshots
 
 ### Food Delivery Analytics
-<img width="1872" height="927" alt="query_pilot_ss3" src="https://github.com/user-attachments/assets/61493689-0d28-481f-97dc-bedecb0df099" />
+<img width="1918" height="917" alt="query_pilot_ss1_demo" src="https://github.com/user-attachments/assets/db95d179-307b-4996-be64-18401a2e6eb1" />
 
-<!-- ### Dynamic HR Database Upload
-![HR Database](screenshots/hr_upload.png) -->
 
-### SQL Transparency Panel
-<img width="1918" height="967" alt="query_pilot_ss2" src="https://github.com/user-attachments/assets/25cffb8f-a8e1-4f76-a0a9-558b694e77bc" />
+### Dynamic HR Database Upload
+<img width="1915" height="842" alt="query_pilot_ss2" src="https://github.com/user-attachments/assets/4ea36d73-7fde-49cc-be1a-b37470380b7b" />
 
-<!-- ### Auto-Generated Schema Questions
-![Schema Questions](screenshots/schema_questions.png) -->
+
+### Auto-Generated Schema Questions
+<img width="353" height="908" alt="query_pilot_ss3" src="https://github.com/user-attachments/assets/403a9d60-cd18-487e-bfce-fefdb810d306" />
 
 ---
 
