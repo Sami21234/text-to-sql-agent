@@ -32,7 +32,7 @@ Clone and run locally — instructions below.
 > Get instant answers backed by real SQL.
 > Your data never leaves your machine.
 
-**Demo Video:** [Watch on LinkedIn]([https://linkedin.com/in/mohd-sami-dev](https://www.linkedin.com/posts/mohd-sami-dev_ai-sql-nlp-activity-7489651779996082176-iVV_?utm_source=share&utm_medium=member_desktop&rcm=ACoAAETeJdwBLz02CcuuXNMc1-8Hcw95huajDb8)) | **GitHub:** [github.com/Sami21234/text-to-sql-agent](https://github.com/Sami21234/text-to-sql-agent)
+**Demo Video:** [Watch on LinkedIn](https://www.linkedin.com/posts/mohd-sami-dev_ai-sql-nlp-activity-7489651779996082176-iVV_?utm_source=share&utm_medium=member_desktop&rcm=ACoAAETeJdwBLz02CcuuXNMc1-8Hcw95huajDb8) | **GitHub:** [github.com/Sami21234/text-to-sql-agent](https://github.com/Sami21234/text-to-sql-agent)
 
 ---
 
