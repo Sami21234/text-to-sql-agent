@@ -199,6 +199,14 @@ useful analytical questions a business user would ask.
 SCHEMA:
 {chr(10).join(table_summary)}
 
+REQUIREMENTS FOR QUESTIONS:
+- Questions must be answerable with a single simple SELECT query
+- No questions requiring median, percentile, or correlation calculations
+- No questions requiring CTEs or window functions
+- No questions comparing time periods unless date columns exist
+- Focus on COUNT, SUM, AVG, MAX, MIN, GROUP BY queries
+- Questions should match the actual data available in the schema
+
 Return exactly {count} questions, one per line.
 No numbering, no bullets, no explanation.
 Only the questions themselves.

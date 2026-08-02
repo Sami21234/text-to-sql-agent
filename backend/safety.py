@@ -19,23 +19,26 @@ def is_safe_query(sql: str) -> tuple[bool, str]:
     # Normalize the SQL query to whitespace and uppercase for consistent checking
     sql_upper = " ".join(sql.upper().split())   # Removing extra whitespace and converting to uppercase for uniformity
 
+    # Allow CTEs that start with WITH ... SELECT
+    if sql_upper.strip().startswith("WITH"):
+        if "SELECT" not in sql_upper:
+            return False, "Query must contain SELECT"
+        # Check for forbidden keywords
+        for keyword in FORBIDDEN_KEYWORDS:
+            pattern = r'\b' + keyword + r'\b'
+            if re.search(pattern, sql_upper):
+                return False, f"Forbidden keyword: {keyword}"
+        return True, ""
+
     # Must start with SELECT or WITH for read-only queries
-    if not sql_upper.strip().startswith(("SELECT", "WITH")):
-        return False, ( f"Unsafe SQL detected: Query must start with SELECT or WITH for read-only operations. " f"Got: {sql[:50]}")     
+    if not sql_upper.strip().startswith("SELECT"):
+        return False, f"Non-SELECT query blocked"   
 
     # Check for forbidden keywords in the SQL query
     for keyword in FORBIDDEN_KEYWORDS:
-        if re.search(r'\b' + re.escape(keyword) + r'\b', sql_upper):
-            return False, f"Unsafe SQL detected: '{keyword}' operation is not allowed."
-    
-    # Check for forbidden keywords
-    for keyword in FORBIDDEN_KEYWORDS:      
-        # Use word boundary to avoid matching substrings
         pattern = r'\b' + keyword + r'\b'
         if re.search(pattern, sql_upper):
-            return False, (
-                f"Forbidden keyword detected: {keyword}"
-            ) 
+            return False, f"Forbidden keyword: {keyword}" 
         
     # Prevent multiple statements
     # Semicolon in middle of query = potential injection

@@ -109,15 +109,26 @@ def ask_agent(question: str, db_path: str = None) -> dict:
         print(f"[Agent] Raw result: {raw_result}")
 
         # Step 3: Format answer
-        answer_prompt = f"""Question: {question}
+        answer_prompt = f"""You received this question: {question}
 
-SQL Query: {sql}
+The SQL query that ran was: {sql}
 
-Query Result: {raw_result}
+The actual database returned this exact result: {raw_result}
+
+Now write one or two clear sentences answering the question.
+Use the actual values from the result above.
+Do not use placeholders like [Department Name] or [Amount].
+Do not say "the result shows" or "based on the query".
+Just state the answer directly using the real numbers and names.
+
+For example if the result was [('Engineering', 85000.0)] you would say:
+The average salary in Engineering is $85,000.
 
 Write a clear, concise answer to the question based on the result.
 Do not mention SQL or technical details.
-Just answer naturally in one or two sentences."""
+Just answer naturally in one or two sentences.
+
+Answer:"""
 
         answer = llm.invoke(answer_prompt)    
 

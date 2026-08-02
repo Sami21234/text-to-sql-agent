@@ -154,34 +154,34 @@ Same AI engineering stack. Different data types. Different tools.
 ## How It Works
 <div align="centre">
 
-```text
+  ```text
 
-User uploads SQLite database
-            ↓
-PRAGMA inspection — tables, columns, PKs, FKs, row counts
-            ↓
-Ambiguous column detection — auto-generates disambiguation rules
-            ↓
-Schema-aware prompt generated — no hardcoding
-            ↓
-User asks question in plain English
-            ↓
-Input validation — length check, injection pattern detection
-            ↓
-LLM (Mistral 7B) generates raw SQL from schema prompt
-            ↓
-clean_sql() strips markdown and multiple statements
-            ↓
-Safety check — SELECT-only guard blocks destructive queries
-            ↓
-SQLite executes the query
-            ↓
-LLM formats raw result as natural language answer
-            ↓
-Answer + SQL + CSV export displayed in UI
-            ↓
-Query saved to session history
-```
+  User uploads SQLite database
+              ↓
+  PRAGMA inspection — tables, columns, PKs, FKs, row counts
+              ↓
+  Ambiguous column detection — auto-generates disambiguation rules
+              ↓
+  Schema-aware prompt generated — no hardcoding
+              ↓
+  User asks question in plain English
+              ↓
+  Input validation — length check, injection pattern detection
+              ↓
+  LLM (Mistral 7B) generates raw SQL from schema prompt
+              ↓
+  clean_sql() strips markdown and multiple statements
+              ↓
+  Safety check — SELECT-only guard blocks destructive queries
+              ↓
+  SQLite executes the query
+              ↓
+  LLM formats raw result as natural language answer
+              ↓
+  Answer + SQL + CSV export displayed in UI
+              ↓
+  Query saved to session history
+  ```
 </div>
 
 ---
